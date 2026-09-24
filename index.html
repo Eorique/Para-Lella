@@ -1,411 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <title>Para a pessoa que eu mais amo🩷</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Fretes</title>
     <style>
-        :root {
-            --pink: #ff758c;
-            --purple: #7158e2;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-        
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow-x: hidden; 
-            background: #050505; 
-            font-family: 'Segoe UI', sans-serif; 
-            scroll-behavior: smooth; 
-        }
-
-        canvas { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            z-index: -1; 
-        }
-
-        /* --- CENA 1: ENTRADA --- */
-        #scene1 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            transition: all 1s ease;
-        }
-
-        .welcome-card {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(20px);
-            padding: 60px;
-            border-radius: 40px;
-            text-align: center;
-            color: white;
-            border: 1px solid var(--pink);
-        }
-
-        /* --- CENA 2: CONTEÚDO --- */
-        #scene2 { 
-            display: none; 
-            opacity: 0; 
-            width: 100%; 
-            transition: opacity 1.5s; 
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 100px 20px;
-        }
-
-        /* MURAL DE FOTOS */
-        .photo-mural {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-            margin-bottom: 150px;
-        }
-
-        .photo-card {
-            background: white;
-            padding: 12px 12px 45px 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
-
-        .photo-card img { 
-            width: 100%; 
-            height: 400px; 
-            object-fit: cover; 
-        }
-
-        .photo-card:hover { 
-            transform: scale(1.08) rotate(0deg) !important; 
-            z-index: 10; 
-        }
-
-        /* SEÇÃO DO TEXTÃO (CARTA) */
-        .letter-section {
-            max-width: 850px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            color: #f0f0f0;
-            padding: 80px 60px;
-            border-radius: 40px;
-            line-height: 2.2;
-            font-size: 1.3rem;
-            border: 1px solid rgba(255, 117, 140, 0.3);
-            box-shadow: 0 0 100px rgba(0,0,0,0.8);
-            margin-bottom: 200px;
-            position: relative;
-        }
-
-        .letter-section h2 {
-            font-size: 3rem;
-            color: var(--pink);
-            margin-bottom: 40px;
-            text-align: center;
-            font-family: 'Georgia', serif;
-        }
-
-        .letter-content p { 
-            margin-bottom: 30px; 
-            text-indent: 30px; 
-        }
-
-        .signature {
-            text-align: right;
-            margin-top: 60px;
-            font-family: 'Brush Script MT', cursive;
-            font-size: 2.5rem;
-            color: var(--pink);
-        }
-
-        .btn-enter {
-            padding: 20px 60px;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, var(--pink), var(--purple));
-            border: none;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        /* Divisória fofa */
-        .divider {
-            margin: 100px 0;
-            color: var(--pink);
-            font-size: 2rem;
-            letter-spacing: 15px;
-        }
-
-        /* --- AJUSTES PARA CELULAR --- */
-        @media (max-width: 600px) {
-
-            .welcome-card {
-                padding: 40px 25px;
-                width: 75%;
-            }
-
-            .welcome-card h1 {
-                font-size: 1.8rem;
-            }
-
-            .btn-enter {
-                padding: 16px 30px;
-                font-size: 0.9rem;
-                letter-spacing: 2px;
-            }
-
-            .container {
-                padding: 60px 10px;
-            }
-
-            .photo-mural {
-                width: 95%;
-                grid-template-columns: 1fr;
-                gap: 25px;
-                margin-bottom: 80px;
-            }
-
-            .photo-card img {
-                height: 350px;
-            }
-
-            .letter-section {
-                width: 85%;
-                padding: 45px 25px;
-                font-size: 1rem;
-                line-height: 1.9;
-                border-radius: 25px;
-                margin-bottom: 100px;
-            }
-
-            .letter-section h2 {
-                font-size: 2.2rem;
-            }
-
-            .letter-content p {
-                margin-bottom: 25px;
-                text-indent: 15px;
-            }
-
-            .signature {
-                font-size: 2rem;
-            }
-        }
+        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f8f9fa; }
+        .sidebar { width: 250px; background: #ffffff; padding: 20px; border-right: 1px solid #e5e7eb; }
+        .content { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        .metric-cards { display: flex; gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 14px; border: 1px solid #e5e7eb; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h1 { font-size: 30px; font-weight: 700; color: #111827; margin-bottom: 0; }
+        .btn { display: block; width: 100%; padding: 10px; margin-bottom: 10px; background: white; border: 1px solid #e5e7eb; border-radius: 5px; cursor: pointer; text-align: left; }
+        .btn:hover { background: #f3f4f6; }
+        .status-pill { display: inline-block; padding: 6px 12px; border-radius: 20px; background: #eef2ff; color: #3730a3; font-weight: 600; font-size: 13px; }
     </style>
 </head>
-
 <body>
 
-    <canvas id="bg"></canvas>
-
-    <div id="scene1">
-        <div class="welcome-card">
-            <h1>Um pequeno presente para você</h1>
-            <p>Espero que goste do presente</p>
-            <button class="btn-enter" onclick="startSurprise()">Abrir nosso mundo</button>
-        </div>
+    <!-- Barra Lateral -->
+    <div class="sidebar">
+        <h3>🚚 Gestão de Fretes</h3>
+        <p><strong>Nome do Utilizador</strong><br><small style="color: #667085;">ADMINISTRADOR</small></p>
+        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
+        <button class="btn">🏠 Dashboard</button>
+        <button class="btn">➕ Nova solicitação</button>
+        <button class="btn">📋 Requisições</button>
+        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;">Exportação</p>
+        <button class="btn">📥 Exportar Excel</button>
+        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
+        <button class="btn">🚪 Sair</button>
     </div>
 
-    <div id="scene2">
-        <div class="container">
+    <!-- Conteúdo Principal (Dashboard) -->
+    <div class="content">
+        <h1>Dashboard</h1>
+        <p style="color:#667085; margin-top: 5px;">Visão geral das solicitações de frete</p>
 
-            <h1 style="color: white; letter-spacing: 10px; margin-bottom: 80px;">
-                MEMÓRIAS
-            </h1>
-            
-            <div class="photo-mural">
-
-                <div class="photo-card" style="transform: rotate(-2deg);">
-                    <img src="file_00000000570c71f598ff15ca12a09a69.png">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(3deg);">
-                    <img src="motion_photo_2689061293025270798.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(-4deg);">
-                    <img src="IMG-20260524-WA0140.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(1deg);">
-                    <img src="IMG-20260716-WA0026.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(-3deg);">
-                    <img src="IMG-20260426-WA0038.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(2deg);">
-                    <img src="Screenshot_20260330_010937_WhatsApp~2.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(4deg);">
-                    <img src="foto7.jpg">
-                </div>
-
-                <div class="photo-card" style="transform: rotate(-1deg);">
-                    <img src="foto8.jpg">
-                </div>
-
+        <div class="metric-cards">
+            <div class="card">
+                <p style="margin:0; color:#667085; font-size: 14px;">Total</p>
+                <h2 style="margin:10px 0 0 0;">15</h2>
             </div>
-
-            <div class="divider">--- ♥ ---</div>
-
-            <div class="letter-section">
-
-                <h2>Minha Lella,</h2>
-
-                <div class="letter-content">
-
-                    <p>
-                        Oii amor, eu não sei muito bem como escrever isso, pois nunca escrevi nada para ninguém kkkk,
-                        mas por você eu aprendo.
-                    </p>
-                    
-                    <p>
-                        Marcella Pontes Monteiro, você é a pessoa mais importante pra mim. Eu não imagino mais meu mundo
-                        sem você, agora todo o meu mundo gira em torno da sua felicidade. Se você está feliz, eu estou feliz;
-                        se você tá triste, eu estou triste; se você está cansada, eu faria o máximo para poder deixar você
-                        descansar o tempo que precisar.
-                    </p>
-
-                    <p>
-                        Toda vez que eu digo que te amo não é da boca pra fora. Eu realmente te amo e quero expressar isso
-                        cada vez mais pra você nunca esquecer o quão importante você é pra mim e o quão apaixonado por você
-                        eu sou. Eu não quero que em momento nenhum passe pela sua cabeça que eu parei de te amar, pois é algo
-                        impossível, porque toda vez que eu te vejo eu me apaixono de novo e de novo. E eu nunca vou me cansar,
-                        porque você é incrível por ser você mesma.
-                    </p>
-
-                    <p>
-                        Seu sorriso é algo que não tem explicação, toda vez que você ri das minhas piadas sem graça eu fico
-                        tão feliz, pois a mulher que eu mais amo está feliz por uma piada tão sem graça. A sua voz é algo que
-                        eu nunca vou enjoar de ouvir, toda vez que você fala "amor" pra mim eu fico igual a uma criança kkkk.
-                        Sua risada é, com certeza, um dos meus sons favoritos de escutar. Eu poderia escrever tudo o que eu
-                        amo em você, mas não iria caber no site.
-                    </p>
-
-                    <p>
-                        Nesses nossos meses juntos, a gente já fez tanta coisa, mas só de imaginar que ainda temos tanta
-                        coisa para viver juntos me faz imaginar o quão feliz vai ser minha vida ao seu lado. A gente ainda
-                        vai viajar pra muitos lugares, fazer tanta comida juntos, assistir todos os filmes e séries que estão
-                        na lista para assistir, até quando iremos escolher os móveis da nossa futura casa. São tantas coisas
-                        que podem parecer simples, mas cada momento com você se torna especial.
-                    </p>
-
-                    <p>
-                        Nesses nossos meses juntos, eu me apaixonei cada dia mais por você, e ainda continuarei me apaixonando,
-                        porque você é a melhor mulher que eu poderia pedir para ter na minha vida. Eu nunca imaginei que poderia
-                        amar tanto assim até realmente começar a te amar.
-                    </p>
-
-                    <p>
-                        Eu quero que todos os nossos momentos, a partir desse momento, sejam marcados para que oficialmente
-                        possamos dizer que essa é a nossa história. E isso é algo que me deixa sem saber o que pensar sobre o
-                        que pode acontecer, porque eu nunca imaginei que viveria algo assim algum dia. E nem tem como querer
-                        imaginar exatamente o que pode acontecer daqui pra frente. Eu só quero viver tudo isso com você,
-                        um momento de cada vez.
-                    </p>
-
-                    <p>
-                        Claro que teremos brigas e momentos difíceis, porque nenhum relacionamento é perfeito, mas vamos lidar
-                        com tudo juntos. E também teremos dias tão felizes que nunca esqueceremos pelo resto das nossas vidas.
-                        Quero estar ao seu lado nos dias bons e nos dias difíceis, e quero que você saiba que nunca precisa
-                        enfrentar tudo sozinha.
-                    </p>
-
-                    <p>
-                        Há um tempo eu ando pensando em como fazer um pedido de namoro ideal para uma pessoa igual a você,
-                        e eu nunca cheguei em uma resposta correta porque você merece tudo. Então, eu fiz essa surpresa pra
-                        você e espero que tenha gostado.
-                    </p>
-
-                    <p>
-                        Eu te amo muito!
-                    </p>
-
-                </div>
-
-                <div class="signature">
-                    Com todo amor e carinho do mundo <br>
-                    Henrique
-                </div>
-
+            <div class="card">
+                <p style="margin:0; color:#667085; font-size: 14px;">Em aberto</p>
+                <h2 style="margin:10px 0 0 0;">5</h2>
             </div>
-            
-            <div style="height: 100px;"></div>
+            <div class="card">
+                <p style="margin:0; color:#667085; font-size: 14px;">Aguardando cotação</p>
+                <h2 style="margin:10px 0 0 0;">3</h2>
+            </div>
+            <div class="card">
+                <p style="margin:0; color:#667085; font-size: 14px;">Em entrega</p>
+                <h2 style="margin:10px 0 0 0;">2</h2>
+            </div>
+        </div>
 
+        <h3 style="border-top: 1px solid #e5e7eb; padding-top: 20px;">Últimas requisições</h3>
+        <div class="card" style="padding: 0;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #e5e7eb; background: #f9fafb;">
+                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Número</th>
+                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Status</th>
+                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Tipo</th>
+                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Origem → Destino</th>
+                </tr>
+                <!-- Exemplo estático de uma linha da tabela de requisições -->
+                <tr>
+                    <td style="padding: 15px 20px;"><strong>001/26</strong></td>
+                    <td style="padding: 15px 20px;"><span class="status-pill">Cotação</span></td>
+                    <td style="padding: 15px 20px;">Coleta</td>
+                    <td style="padding: 15px 20px;">Diadema → São Paulo</td>
+                </tr>
+            </table>
         </div>
     </div>
-
-<script>
-    // FUNDO DINÂMICO
-    const canvas = document.getElementById('bg');
-    const ctx = canvas.getContext('2d');
-    let time = 0;
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-
-    function draw() {
-        ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        time += 0.005;
-
-        for (let i = 0; i < 4; i++) {
-            ctx.beginPath();
-            ctx.strokeStyle = i % 2 === 0 ? '#ff758c15' : '#7158e215';
-            ctx.lineWidth = 150;
-            ctx.moveTo(-100, canvas.height / 2);
-
-            for (let x = 0; x < canvas.width + 200; x += 50) {
-                let y = canvas.height / 2 + Math.sin(x * 0.001 + time + i) * 200;
-                ctx.lineTo(x, y);
-            }
-
-            ctx.stroke();
-        }
-
-        requestAnimationFrame(draw);
-    }
-
-    draw();
-
-    function startSurprise() {
-        document.getElementById('scene1').style.opacity = '0';
-
-        setTimeout(() => {
-            document.getElementById('scene1').style.display = 'none';
-
-            const s2 = document.getElementById('scene2');
-            s2.style.display = 'block';
-
-            setTimeout(() => {
-                s2.style.opacity = '1';
-            }, 100);
-
-        }, 1000);
-    }
-</script>
 
 </body>
 </html>
