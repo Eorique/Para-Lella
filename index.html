@@ -1,81 +1,1239 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Fretes</title>
-    <style>
-        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f8f9fa; }
-        .sidebar { width: 250px; background: #ffffff; padding: 20px; border-right: 1px solid #e5e7eb; }
-        .content { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .metric-cards { display: flex; gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 20px; border-radius: 14px; border: 1px solid #e5e7eb; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        h1 { font-size: 30px; font-weight: 700; color: #111827; margin-bottom: 0; }
-        .btn { display: block; width: 100%; padding: 10px; margin-bottom: 10px; background: white; border: 1px solid #e5e7eb; border-radius: 5px; cursor: pointer; text-align: left; }
-        .btn:hover { background: #f3f4f6; }
-        .status-pill { display: inline-block; padding: 6px 12px; border-radius: 20px; background: #eef2ff; color: #3730a3; font-weight: 600; font-size: 13px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GESTÃO DE FRETES — Gestão de Fretes e Movimentações</title>
+  
+  <!-- Estilos Embutidos (CSS3) -->
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --primary-dark: #1e293b;
+      --secondary-color: #2563eb;
+      --accent-color: #0284c7;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      
+      --status-aguardando: #d97706;
+      --status-aguardando-bg: #fef3c7;
+      --status-andamento: #2563eb;
+      --status-andamento-bg: #dbeafe;
+      --status-sucesso: #16a34a;
+      --status-sucesso-bg: #dcfce7;
+      --status-perigo: #dc2626;
+      --status-perigo-bg: #fee2e2;
+      --status-neutro: #475569;
+      --status-neutro-bg: #f1f5f9;
+
+      --radius: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* Tela de Login */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background-color: var(--primary-dark);
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-header h1 {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .login-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .demo-credentials {
+      margin-top: 20px;
+      padding: 12px;
+      background: var(--status-neutro-bg);
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+    }
+
+    /* Layout da Aplicação */
+    header {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .brand p {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    nav {
+      background-color: var(--primary-dark);
+      padding: 0 20px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-link {
+      color: #cbd5e1;
+      padding: 12px 16px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #fff;
+      border-bottom-color: var(--accent-color);
+      background: rgba(255,255,255,0.05);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    /* Cards e Dashboard */
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .card h3 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card .value {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    /* Formulários e Seções */
+    .form-section {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .form-section-title {
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+    }
+
+    /* Botões */
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--secondary-color); color: #fff; }
+    .btn-success { background: var(--status-sucesso); color: #fff; }
+    .btn-danger { background: var(--status-perigo); color: #fff; }
+    .btn-secondary { background: var(--status-neutro-bg); color: var(--text-main); border: 1px solid var(--border-color); }
+
+    /* Tabelas e Cards de Listagem */
+    .table-container {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--status-neutro-bg);
+      font-weight: 600;
+    }
+
+    .mobile-cards { display: none; }
+
+    /* Badges de Status */
+    .badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-aguardando { background: var(--status-aguardando-bg); color: var(--status-aguardando); }
+    .badge-andamento { background: var(--status-andamento-bg); color: var(--status-andamento); }
+    .badge-sucesso { background: var(--status-sucesso-bg); color: var(--status-sucesso); }
+    .badge-perigo { background: var(--status-perigo-bg); color: var(--status-perigo); }
+
+    /* Modais e Abas */
+    .tab-navigation {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .tab-button.active {
+      color: var(--secondary-color);
+      border-bottom-color: var(--secondary-color);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 24px;
+      border-radius: var(--radius);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    /* Responsividade para iPhone e Mobile */
+    @media (max-width: 768px) {
+      .table-container table { display: none; }
+      .mobile-cards { display: flex; flex-direction: column; gap: 12px; padding: 12px; }
+      .mobile-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      }
+      .mobile-card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+      }
+      .btn { min-height: 44px; } /* Facilita o toque na tela do celular */
+    }
+  </style>
+
+  <!-- Biblioteca Externa SheetJS para Exportação Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
-    <!-- Barra Lateral -->
-    <div class="sidebar">
-        <h3>🚚 Gestão de Fretes</h3>
-        <p><strong>Nome do Utilizador</strong><br><small style="color: #667085;">ADMINISTRADOR</small></p>
-        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
-        <button class="btn">🏠 Dashboard</button>
-        <button class="btn">➕ Nova solicitação</button>
-        <button class="btn">📋 Requisições</button>
-        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
-        <p style="font-weight: bold; margin-bottom: 10px;">Exportação</p>
-        <button class="btn">📥 Exportar Excel</button>
-        <hr style="border-top: 1px solid #e5e7eb; margin: 20px 0;">
-        <button class="btn">🚪 Sair</button>
+  <!-- ================= TELA DE LOGIN ================= -->
+  <div id="loginView" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>GESTÃO DE FRETES</h1>
+        <p>Gestão de Fretes e Movimentações</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>E-mail</label>
+          <input type="email" id="loginEmail" required placeholder="admin@empresa.local">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label>Senha</label>
+          <input type="password" id="loginSenha" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar no Sistema</button>
+      </form>
+      <div class="demo-credentials">
+        <strong>Acessos para Teste:</strong><br>
+        • Admin: admin@empresa.local / admin123<br>
+        • Operador: operador@empresa.local / 123456<br>
+        • Solicitante: solicitante@empresa.local / 123456<br>
+        • Financeiro: financeiro@empresa.local / 123456
+      </div>
     </div>
+  </div>
 
-    <!-- Conteúdo Principal (Dashboard) -->
-    <div class="content">
-        <h1>Dashboard</h1>
-        <p style="color:#667085; margin-top: 5px;">Visão geral das solicitações de frete</p>
+  <!-- ================= APLICAÇÃO PRINCIPAL ================= -->
+  <div id="appView" style="display: none;">
+    <header>
+      <div class="header-content">
+        <div class="brand">
+          <h1>GESTÃO DE FRETES</h1>
+          <p>Gestão de Fretes e Movimentações</p>
+        </div>
+        <div class="user-info">
+          <span id="userNameDisplay">Usuário</span>
+          <button onclick="logout()" class="btn-logout">Sair</button>
+        </div>
+      </div>
+    </header>
 
-        <div class="metric-cards">
-            <div class="card">
-                <p style="margin:0; color:#667085; font-size: 14px;">Total</p>
-                <h2 style="margin:10px 0 0 0;">15</h2>
-            </div>
-            <div class="card">
-                <p style="margin:0; color:#667085; font-size: 14px;">Em aberto</p>
-                <h2 style="margin:10px 0 0 0;">5</h2>
-            </div>
-            <div class="card">
-                <p style="margin:0; color:#667085; font-size: 14px;">Aguardando cotação</p>
-                <h2 style="margin:10px 0 0 0;">3</h2>
-            </div>
-            <div class="card">
-                <p style="margin:0; color:#667085; font-size: 14px;">Em entrega</p>
-                <h2 style="margin:10px 0 0 0;">2</h2>
-            </div>
+    <nav>
+      <div class="nav-container">
+        <a class="nav-link active" onclick="navigate('dashboard')">Dashboard</a>
+        <a class="nav-link" id="nav-requisicoes" onclick="navigate('requisicoes')">Requisições</a>
+        <a class="nav-link" id="nav-nova-solicitacao" onclick="navigate('nova-solicitacao')">Nova Solicitação</a>
+        <a class="nav-link" id="nav-notificacoes" onclick="navigate('notificacoes')">Notificações</a>
+        <a class="nav-link" id="nav-usuarios" onclick="navigate('usuarios')">Usuários</a>
+        <a class="nav-link" onclick="navigate('configuracoes')">Configurações</a>
+      </div>
+    </nav>
+
+    <main id="contentArea">
+      <!-- O Conteúdo das telas é renderizado dinamicamente aqui -->
+    </main>
+  </div>
+
+  <!-- Modal Geral de Escolha e Confirmações -->
+  <div id="appModal" class="modal">
+    <div class="modal-content">
+      <h3 id="modalTitle" style="margin-bottom: 12px;">Confirmação</h3>
+      <div id="modalBody" style="margin-bottom: 20px; font-size: 0.9rem;"></div>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalConfirmBtn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LÓGICA E SCRIPT (JS PURO) ================= -->
+  <script>
+    /* ================= BANCO DE DADOS LOCAL E ESTADO ================= */
+    const DB_KEYS = {
+      USUARIOS: 'fretes_usuarios',
+      REQUISICOES: 'fretes_requisicoes',
+      COTACOES: 'fretes_cotacoes',
+      OPERACOES: 'fretes_operacoes',
+      FINANCEIRO: 'fretes_financeiro',
+      ENTREGAS: 'fretes_entregas',
+      HISTORICO: 'fretes_historico',
+      NOTIFICACOES: 'fretes_notificacoes'
+    };
+
+    const USUARIOS_DEMO = [
+      { id: '1', nome: 'Administrador', email: 'admin@empresa.local', senha: 'admin123', perfil: 'ADMINISTRADOR', status: 'Ativo' },
+      { id: '2', nome: 'Operador Fretes', email: 'operador@empresa.local', senha: '123456', perfil: 'OPERADOR', status: 'Ativo' },
+      { id: '3', nome: 'Solicitante Exemplo', email: 'solicitante@empresa.local', senha: '123456', perfil: 'SOLICITANTE', status: 'Ativo' },
+      { id: '4', nome: 'Financeiro Dept', email: 'financeiro@empresa.local', senha: '123456', perfil: 'FINANCEIRO', status: 'Ativo' }
+    ];
+
+    const REQUISICOES_DEMO = [
+      {
+        id: 'req_001_26',
+        numero: '001/26',
+        tipoMovimentacao: 'Movimentação de Equipamentos',
+        empresaDebito: 'AQUAMEC',
+        cnpjDebito: '21.998.472/0001-55',
+        solicitante: 'Solicitante Exemplo',
+        pcPvMotivo: 'MATERIAL FABRICA - PC 8863 - PONTEIRO',
+        dataSolicitacao: '2026-09-20',
+        urgenciaEntrega: 'Alta',
+        cliente: 'POINTER COM E DISTR DE METAIS EIRELLI',
+        cnpjCliente: '62.285.440/0001-90',
+        origem: { razao: 'AQUAMEC', cnpj: '21.998.472/0001-55', endereco: 'R. Florianópolis, 598 - Vila Bertioga', cep: '03185-050', cidade: 'São Paulo', estado: 'SP' },
+        destino: { razao: 'POINTER COM', cnpj: '62.285.440/0001-90', endereco: 'Av. Tiradentes, 2620 - Parque Industrial', cep: '13309-640', cidade: 'Itu', estado: 'SP' },
+        itens: [
+          { descricao: 'PERFIL REDONDO BRONZE 4 1/2" SAE 660', qtd: 1, unidade: 'Unidade', comp: '500', larg: '0', alt: '0', pesoUnit: 50, valorUnit: 6718, volumes: 1 }
+        ],
+        pesoTotal: 50,
+        valorTotal: 6718,
+        totalVolumes: 1,
+        dataMaxima: '2026-09-25',
+        triangular: 'Não',
+        tipoFrete: 'CIF',
+        observacao: '01 VOLUME - PESO TOTAL 50KG',
+        status: 'Aguardando Cotação',
+        transportadoraAprovada: '-',
+        valorFreteFinal: 0
+      }
+    ];
+
+    function initDatabase() {
+      if (!localStorage.getItem(DB_KEYS.USUARIOS)) localStorage.setItem(DB_KEYS.USUARIOS, JSON.stringify(USUARIOS_DEMO));
+      if (!localStorage.getItem(DB_KEYS.REQUISICOES)) localStorage.setItem(DB_KEYS.REQUISICOES, JSON.stringify(REQUISICOES_DEMO));
+      if (!localStorage.getItem(DB_KEYS.COTACOES)) localStorage.setItem(DB_KEYS.COTACOES, JSON.stringify([]));
+      if (!localStorage.getItem(DB_KEYS.OPERACOES)) localStorage.setItem(DB_KEYS.OPERACOES, JSON.stringify([]));
+      if (!localStorage.getItem(DB_KEYS.FINANCEIRO)) localStorage.setItem(DB_KEYS.FINANCEIRO, JSON.stringify([]));
+      if (!localStorage.getItem(DB_KEYS.ENTREGAS)) localStorage.setItem(DB_KEYS.ENTREGAS, JSON.stringify([]));
+      if (!localStorage.getItem(DB_KEYS.HISTORICO)) localStorage.setItem(DB_KEYS.HISTORICO, JSON.stringify([]));
+      if (!localStorage.getItem(DB_KEYS.NOTIFICACOES)) localStorage.setItem(DB_KEYS.NOTIFICACOES, JSON.stringify([]));
+    }
+
+    function getDB(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
+    function setDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+    /* ================= AUTENTICAÇÃO E PERFIS ================= */
+    let currentUser = null;
+
+    function checkAuth() {
+      const session = sessionStorage.getItem('currentUser');
+      if (session) {
+        currentUser = JSON.parse(session);
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('appView').style.display = 'block';
+        document.getElementById('userNameDisplay').innerText = `${currentUser.nome} (${currentUser.perfil})`;
+        applyProfilePermissions();
+        navigate('dashboard');
+      } else {
+        document.getElementById('loginView').style.display = 'flex';
+        document.getElementById('appView').style.display = 'none';
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const senha = document.getElementById('loginSenha').value;
+      const usuarios = getDB(DB_KEYS.USUARIOS);
+      
+      const user = usuarios.find(u => u.email === email && u.senha === senha);
+      if (user) {
+        sessionStorage.setItem('currentUser', JSON.stringify(user));
+        checkAuth();
+      } else {
+        alert('Credenciais inválidas. Utilize os e-mails de demonstração informados na página.');
+      }
+    });
+
+    function logout() {
+      sessionStorage.removeItem('currentUser');
+      checkAuth();
+    }
+
+    function applyProfilePermissions() {
+      const perfil = currentUser.perfil;
+      document.getElementById('nav-nova-solicitacao').style.display = (perfil === 'FINANCEIRO') ? 'none' : 'block';
+      document.getElementById('nav-usuarios').style.display = (perfil === 'ADMINISTRADOR') ? 'block' : 'none';
+    }
+
+    /* ================= NAVEGAÇÃO E ROTAS ================= */
+    function navigate(screen, param = null) {
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${screen}`);
+      if(activeNav) activeNav.classList.add('active');
+
+      const container = document.getElementById('contentArea');
+      switch (screen) {
+        case 'dashboard': renderDashboard(container); break;
+        case 'requisicoes': renderRequisicoes(container); break;
+        case 'nova-solicitacao': renderNovaSolicitacao(container); break;
+        case 'detalhe': renderDetalheRequisicao(container, param); break;
+        case 'notificacoes': renderNotificacoes(container); break;
+        case 'usuarios': renderUsuarios(container); break;
+        case 'configuracoes': renderConfiguracoes(container); break;
+        default: renderDashboard(container);
+      }
+    }
+
+    /* ================= DASHBOARD ================= */
+    function renderDashboard(container) {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      
+      const totals = {
+        total: reqs.length,
+        aguardandoCotacao: reqs.filter(r => r.status === 'Aguardando Cotação').length,
+        aguardandoAprovacao: reqs.filter(r => r.status === 'Aguardando Aprovação').length,
+        cotacaoAprovada: reqs.filter(r => r.status === 'Cotação Aprovada').length,
+        emOperacao: reqs.filter(r => r.status === 'Em Operação' || r.status === 'Coleta Solicitada').length,
+        emTransporte: reqs.filter(r => r.status === 'Em Transporte').length,
+        entregues: reqs.filter(r => r.status === 'Entregue').length,
+        atrasadas: reqs.filter(r => r.status === 'Atrasado').length
+      };
+
+      container.innerHTML = `
+        <div class="dashboard-cards">
+          <div class="card"><h3>Total Requisições</h3><div class="value">${totals.total}</div></div>
+          <div class="card" style="border-color: var(--status-aguardando)"><h3>Aguard. Cotação</h3><div class="value">${totals.aguardandoCotacao}</div></div>
+          <div class="card" style="border-color: var(--status-aguardando)"><h3>Aguard. Aprovação</h3><div class="value">${totals.aguardandoAprovacao}</div></div>
+          <div class="card" style="border-color: var(--status-andamento)"><h3>Cotação Aprovada</h3><div class="value">${totals.cotacaoAprovada}</div></div>
+          <div class="card" style="border-color: var(--status-andamento)"><h3>Em Operação</h3><div class="value">${totals.emOperacao}</div></div>
+          <div class="card" style="border-color: var(--status-andamento)"><h3>Em Transporte</h3><div class="value">${totals.emTransporte}</div></div>
+          <div class="card" style="border-color: var(--status-sucesso)"><h3>Entregues</h3><div class="value">${totals.entregues}</div></div>
+          <div class="card" style="border-color: var(--status-perigo)"><h3>Atrasadas</h3><div class="value">${totals.atrasadas}</div></div>
         </div>
 
-        <h3 style="border-top: 1px solid #e5e7eb; padding-top: 20px;">Últimas requisições</h3>
-        <div class="card" style="padding: 0;">
-            <table style="width: 100%; text-align: left; border-collapse: collapse;">
-                <tr style="border-bottom: 1px solid #e5e7eb; background: #f9fafb;">
-                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Número</th>
-                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Status</th>
-                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Tipo</th>
-                    <th style="padding: 12px 20px; font-weight: 600; color: #667085; font-size: 14px;">Origem → Destino</th>
-                </tr>
-                <!-- Exemplo estático de uma linha da tabela de requisições -->
+        <div class="form-section">
+          <div class="form-section-title">Solicitações Recentes</div>
+          <div class="table-container">
+            <table>
+              <thead>
                 <tr>
-                    <td style="padding: 15px 20px;"><strong>001/26</strong></td>
-                    <td style="padding: 15px 20px;"><span class="status-pill">Cotação</span></td>
-                    <td style="padding: 15px 20px;">Coleta</td>
-                    <td style="padding: 15px 20px;">Diadema → São Paulo</td>
+                  <th>Requisição</th><th>Data</th><th>Solicitante</th><th>Origem</th><th>Destino</th><th>Transportadora</th><th>Valor</th><th>Status</th><th>Ações</th>
                 </tr>
+              </thead>
+              <tbody>
+                ${reqs.map(r => `
+                  <tr>
+                    <td><strong>${r.numero}</strong></td>
+                    <td>${r.dataSolicitacao}</td>
+                    <td>${r.solicitante}</td>
+                    <td>${r.origem.cidade}/${r.origem.estado}</td>
+                    <td>${r.destino.cidade}/${r.destino.estado}</td>
+                    <td>${r.transportadoraAprovada || '-'}</td>
+                    <td>R$ ${(r.valorFreteFinal || 0).toFixed(2)}</td>
+                    <td><span class="badge badge-andamento">${r.status}</span></td>
+                    <td><button class="btn btn-secondary" onclick="navigate('detalhe', '${r.id}')">Ver Detalhes</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
             </table>
+          </div>
         </div>
-    </div>
+      `;
+    }
 
+    /* ================= NOVA SOLICITAÇÃO ================= */
+    let itensFormState = [];
+
+    function renderNovaSolicitacao(container) {
+      itensFormState = [];
+      const autoNum = gerarNumeroRequisicao();
+
+      container.innerHTML = `
+        <div class="form-section">
+          <div class="form-section-title">Nova Solicitação de Frete — Requisição Nº ${autoNum}</div>
+          <form id="novaSolicitacaoForm">
+            <!-- SEÇÃO 1: IDENTIFICAÇÃO -->
+            <h4 style="margin: 12px 0; color: var(--accent-color);">1. Identificação</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Tipo de Movimentação *</label>
+                <select id="tipoMovimentacao" required>
+                  <option value="Movimentação de Equipamentos">Movimentação de Equipamentos</option>
+                  <option value="Insumos / Matéria Prima">Insumos / Matéria Prima</option>
+                  <option value="Transferência Interna">Transferência Interna</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Empresa Débito *</label><input type="text" id="empresaDebito" required placeholder="Ex: AQUAMEC"></div>
+              <div class="form-group"><label>CNPJ Débito *</label><input type="text" id="cnpjDebito" required placeholder="00.000.000/0000-00"></div>
+              <div class="form-group"><label>Solicitante</label><input type="text" id="solicitante" value="${currentUser.nome}" readonly></div>
+              <div class="form-group"><label>Número PC / PV / Motivo *</label><input type="text" id="pcPvMotivo" required placeholder="Ex: PC 8863 - PONTEIRO"></div>
+              <div class="form-group"><label>Data da Solicitação</label><input type="date" id="dataSolicitacao" value="${new Date().toISOString().split('T')[0]}" required></div>
+            </div>
+
+            <!-- SEÇÃO 2: ORIGEM E DESTINO -->
+            <h4 style="margin: 16px 0 12px 0; color: var(--accent-color);">2. Origem e Destino</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Razão Social Origem *</label><input type="text" id="origemRazao" required></div>
+              <div class="form-group"><label>CNPJ Origem *</label><input type="text" id="origemCnpj" required></div>
+              <div class="form-group"><label>Endereço Origem *</label><input type="text" id="origemEndereco" required></div>
+              <div class="form-group"><label>Cidade Origem *</label><input type="text" id="origemCidade" required></div>
+              <div class="form-group"><label>Estado Origem *</label><input type="text" id="origemEstado" maxlength="2" required placeholder="SP"></div>
+              
+              <div class="form-group"><label>Razão Social Destino *</label><input type="text" id="destinoRazao" required></div>
+              <div class="form-group"><label>CNPJ Destino *</label><input type="text" id="destinoCnpj" required></div>
+              <div class="form-group"><label>Endereço Destino *</label><input type="text" id="destinoEndereco" required></div>
+              <div class="form-group"><label>Cidade Destino *</label><input type="text" id="destinoCidade" required></div>
+              <div class="form-group"><label>Estado Destino *</label><input type="text" id="destinoEstado" maxlength="2" required placeholder="SP"></div>
+            </div>
+
+            <!-- SEÇÃO 3: CARGA DINÂMICA -->
+            <h4 style="margin: 16px 0 12px 0; color: var(--accent-color);">3. Especificações da Carga</h4>
+            <div style="margin-bottom: 12px;">
+              <button type="button" class="btn btn-secondary" onclick="adicionarItemForm()">+ Adicionar Item</button>
+            </div>
+            <div id="itensContainer"></div>
+            
+            <div style="background: var(--status-neutro-bg); padding: 12px; border-radius: var(--radius); margin: 12px 0;" class="form-grid">
+              <div><strong>Peso Total:</strong> <span id="pesoTotalDisp">0</span> KG</div>
+              <div><strong>Valor Total NF:</strong> R$ <span id="valorTotalDisp">0.00</span></div>
+              <div><strong>Total Volumes:</strong> <span id="volumesTotalDisp">0</span></div>
+            </div>
+
+            <!-- SEÇÃO 4: CONDIÇÕES DE ENTREGA -->
+            <h4 style="margin: 16px 0 12px 0; color: var(--accent-color);">4. Entrega</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Data Máxima Entrega *</label><input type="date" id="dataMaxima" required></div>
+              <div class="form-group"><label>Urgência</label>
+                <select id="urgenciaEntrega"><option>Normal</option><option>Alta</option><option>Crítica</option></select>
+              </div>
+              <div class="form-group"><label>Triangular?</label>
+                <select id="triangular"><option>Não</option><option>Sim</option></select>
+              </div>
+              <div class="form-group"><label>Tipo de Frete</label>
+                <select id="tipoFrete"><option>CIF</option><option>FOB</option></select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 12px;">
+              <label>Observação</label>
+              <textarea id="observacao" rows="2"></textarea>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary">Criar Solicitação</button>
+            </div>
+          </form>
+        </div>
+      `;
+
+      adicionarItemForm(); // Adiciona o primeiro item por padrão
+
+      document.getElementById('novaSolicitacaoForm').addEventListener('submit', salvarNovaSolicitacao);
+    }
+
+    function adicionarItemForm() {
+      const idx = itensFormState.length;
+      itensFormState.push({ id: idx });
+      const container = document.getElementById('itensContainer');
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'form-grid';
+      itemDiv.style.background = '#fff';
+      itemDiv.style.border = '1px solid var(--border-color)';
+      itemDiv.style.padding = '12px';
+      itemDiv.style.borderRadius = 'var(--radius)';
+      itemDiv.style.marginBottom = '8px';
+      itemDiv.id = `item_row_${idx}`;
+
+      itemDiv.innerHTML = `
+        <div class="form-group" style="grid-column: span 2;"><label>Descrição *</label><input type="text" class="item-desc" required></div>
+        <div class="form-group"><label>Qtd *</label><input type="number" class="item-qtd" value="1" onchange="recalcularTotaisItens()" required></div>
+        <div class="form-group"><label>Unidade</label><input type="text" class="item-und" value="Unidad"></div>
+        <div class="form-group"><label>Peso Unit (KG) *</label><input type="number" step="0.01" class="item-peso" value="0" onchange="recalcularTotaisItens()" required></div>
+        <div class="form-group"><label>Valor Unit (R$) *</label><input type="number" step="0.01" class="item-valor" value="0" onchange="recalcularTotaisItens()" required></div>
+        <div class="form-group"><label>Volumes</label><input type="number" class="item-vol" value="1" onchange="recalcularTotaisItens()"></div>
+        <div class="form-group" style="justify-content: flex-end;"><button type="button" class="btn btn-danger" onclick="removerItemForm(${idx})">Remover</button></div>
+      `;
+      container.appendChild(itemDiv);
+    }
+
+    function removerItemForm(idx) {
+      const el = document.getElementById(`item_row_${idx}`);
+      if(el) el.remove();
+      recalcularTotaisItens();
+    }
+
+    function recalcularTotaisItens() {
+      let pesoTotal = 0, valorTotal = 0, volumesTotal = 0;
+      document.querySelectorAll('#itensContainer .form-grid').forEach(row => {
+        const qtd = parseFloat(row.querySelector('.item-qtd').value) || 0;
+        const peso = parseFloat(row.querySelector('.item-peso').value) || 0;
+        const valor = parseFloat(row.querySelector('.item-valor').value) || 0;
+        const vol = parseFloat(row.querySelector('.item-vol').value) || 0;
+
+        pesoTotal += (qtd * peso);
+        valorTotal += (qtd * valor);
+        volumesTotal += vol;
+      });
+
+      document.getElementById('pesoTotalDisp').innerText = pesoTotal.toFixed(2);
+      document.getElementById('valorTotalDisp').innerText = valorTotal.toFixed(2);
+      document.getElementById('volumesTotalDisp').innerText = volumesTotal;
+    }
+
+    function gerarNumeroRequisicao() {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      const anoAtual = new Date().getFullYear().toString().slice(-2);
+      const seq = (reqs.length + 1).toString().padStart(3, '0');
+      return `${seq}/${anoAtual}`;
+    }
+
+    function salvarNovaSolicitacao(e) {
+      e.preventDefault();
+      const num = gerarNumeroRequisicao();
+      const id = 'req_' + Date.now();
+
+      const itens = [];
+      document.querySelectorAll('#itensContainer .form-grid').forEach(row => {
+        itens.push({
+          descricao: row.querySelector('.item-desc').value,
+          qtd: parseFloat(row.querySelector('.item-qtd').value),
+          unidade: row.querySelector('.item-und').value,
+          pesoUnit: parseFloat(row.querySelector('.item-peso').value),
+          valorUnit: parseFloat(row.querySelector('.item-valor').value),
+          volumes: parseInt(row.querySelector('.item-vol').value)
+        });
+      });
+
+      if (itens.length === 0) {
+        alert('Adicione pelo menos um item à carga.');
+        return;
+      }
+
+      const novaReq = {
+        id,
+        numero: num,
+        tipoMovimentacao: document.getElementById('tipoMovimentacao').value,
+        empresaDebito: document.getElementById('empresaDebito').value,
+        cnpjDebito: document.getElementById('cnpjDebito').value,
+        solicitante: currentUser.nome,
+        pcPvMotivo: document.getElementById('pcPvMotivo').value,
+        dataSolicitacao: document.getElementById('dataSolicitacao').value,
+        urgenciaEntrega: document.getElementById('urgenciaEntrega').value,
+        origem: {
+          razao: document.getElementById('origemRazao').value,
+          cnpj: document.getElementById('origemCnpj').value,
+          endereco: document.getElementById('origemEndereco').value,
+          cidade: document.getElementById('origemCidade').value,
+          estado: document.getElementById('origemEstado').value
+        },
+        destino: {
+          razao: document.getElementById('destinoRazao').value,
+          cnpj: document.getElementById('destinoCnpj').value,
+          endereco: document.getElementById('destinoEndereco').value,
+          cidade: document.getElementById('destinoCidade').value,
+          estado: document.getElementById('destinoEstado').value
+        },
+        itens,
+        pesoTotal: parseFloat(document.getElementById('pesoTotalDisp').innerText),
+        valorTotal: parseFloat(document.getElementById('valorTotalDisp').innerText),
+        totalVolumes: parseInt(document.getElementById('volumesTotalDisp').innerText),
+        dataMaxima: document.getElementById('dataMaxima').value,
+        triangular: document.getElementById('triangular').value,
+        tipoFrete: document.getElementById('tipoFrete').value,
+        observacao: document.getElementById('observacao').value,
+        status: 'Aguardando Cotação'
+      };
+
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      reqs.push(novaReq);
+      setDB(DB_KEYS.REQUISICOES, reqs);
+
+      registrarHistorico(id, 'Solicitação criada', 'Nova solicitação registrada no sistema');
+      alert(`Solicitação criada com sucesso! Número: ${num}`);
+      navigate('requisicoes');
+    }
+
+    /* ================= LISTA DE REQUISIÇÕES ================= */
+    function renderRequisicoes(container) {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+
+      container.innerHTML = `
+        <div class="form-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="form-section-title" style="margin-bottom:0;">Lista de Requisições</div>
+            <button class="btn btn-success" onclick="exportarExcel()">Exportar Excel</button>
+          </div>
+          
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Requisição</th><th>Data</th><th>Solicitante</th><th>Débito</th><th>Origem</th><th>Destino</th><th>Status</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${reqs.map(r => `
+                  <tr>
+                    <td><strong>${r.numero}</strong></td>
+                    <td>${r.dataSolicitacao}</td>
+                    <td>${r.solicitante}</td>
+                    <td>${r.empresaDebito}</td>
+                    <td>${r.origem.cidade}/${r.origem.estado}</td>
+                    <td>${r.destino.cidade}/${r.destino.estado}</td>
+                    <td><span class="badge badge-andamento">${r.status}</span></td>
+                    <td><button class="btn btn-secondary" onclick="navigate('detalhe', '${r.id}')">Visualizar</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ================= DETALHE E ABAS DA REQUISIÇÃO ================= */
+    function renderDetalheRequisicao(container, id) {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      const req = reqs.find(r => r.id === id);
+
+      if (!req) {
+        container.innerHTML = '<p>Requisição não encontrada.</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="form-section">
+          <h2>Requisição Nº ${req.numero}</h2>
+          <p style="color: var(--text-muted); margin-bottom: 16px;">Status Atual: <strong>${req.status}</strong></p>
+
+          <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('tab-solicitacao')">Solicitação</button>
+            <button class="tab-button" onclick="switchTab('tab-cotacoes')">Cotações</button>
+            <button class="tab-button" onclick="switchTab('tab-operacao')">Operação</button>
+            <button class="tab-button" onclick="switchTab('tab-financeiro')">Financeiro</button>
+            <button class="tab-button" onclick="switchTab('tab-entrega')">Entrega</button>
+            <button class="tab-button" onclick="switchTab('tab-historico')">Histórico</button>
+          </div>
+
+          <div id="tab-solicitacao" class="tab-content">
+            <div class="form-grid">
+              <div><strong>Débito:</strong> ${req.empresaDebito} (${req.cnpjDebito})</div>
+              <div><strong>Solicitante:</strong> ${req.solicitante}</div>
+              <div><strong>PV/PC/Motivo:</strong> ${req.pcPvMotivo}</div>
+              <div><strong>Valor NF:</strong> R$ ${req.valorTotal.toFixed(2)}</div>
+              <div><strong>Peso Total:</strong> ${req.pesoTotal} KG</div>
+              <div><strong>Data Máxima:</strong> ${req.dataMaxima}</div>
+            </div>
+            <div style="margin-top: 16px;">
+              <button class="btn btn-secondary" onclick="gerarTextoCotacao('${req.id}')">Gerar Texto de Cotação</button>
+            </div>
+          </div>
+
+          <div id="tab-cotacoes" class="tab-content" style="display:none;">
+            ${renderCotacoesTab(req)}
+          </div>
+
+          <div id="tab-operacao" class="tab-content" style="display:none;">
+            ${renderOperacaoTab(req)}
+          </div>
+
+          <div id="tab-financeiro" class="tab-content" style="display:none;">
+            ${renderFinanceiroTab(req)}
+          </div>
+
+          <div id="tab-entrega" class="tab-content" style="display:none;">
+            ${renderEntregaTab(req)}
+          </div>
+
+          <div id="tab-historico" class="tab-content" style="display:none;">
+            ${renderHistoricoTab(req)}
+          </div>
+        </div>
+      `;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    /* ================= ABA COTAÇÕES ================= */
+    function renderCotacoesTab(req) {
+      const cotacoes = getDB(DB_KEYS.COTACOES).filter(c => c.reqId === req.id);
+
+      return `
+        <h3>Opções de Cotação</h3>
+        <p style="margin-bottom: 12px; font-size: 0.85rem;">Insira até 3 cotações de transportadoras para aprovação.</p>
+        
+        <form id="cotacoesForm" style="margin-bottom: 20px;">
+          <div class="form-grid">
+            <div class="form-group"><label>Transportadora</label><input type="text" id="transp1" value="${cotacoes[0]?.transportadora || ''}"></div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" step="0.01" id="valor1" value="${cotacoes[0]?.valor || ''}"></div>
+            <div class="form-group"><label>Prazo (Dias)</label><input type="text" id="prazo1" value="${cotacoes[0]?.prazo || ''}"></div>
+          </div>
+          <br>
+          <div class="form-grid">
+            <div class="form-group"><label>Transportadora 2</label><input type="text" id="transp2" value="${cotacoes[1]?.transportadora || ''}"></div>
+            <div class="form-group"><label>Valor 2 (R$)</label><input type="number" step="0.01" id="valor2" value="${cotacoes[1]?.valor || ''}"></div>
+            <div class="form-group"><label>Prazo 2</label><input type="text" id="prazo2" value="${cotacoes[1]?.prazo || ''}"></div>
+          </div>
+          <br>
+          <button type="button" class="btn btn-primary" onclick="salvarCotacoes('${req.id}')">Salvar Cotações</button>
+        </form>
+
+        ${cotacoes.length > 0 ? `
+          <h4>Cotações Cadastradas (Clique para escolher):</h4>
+          <div class="form-grid" style="margin-top: 12px;">
+            ${cotacoes.map((c, i) => `
+              <div class="card">
+                <h3>${c.transportadora}</h3>
+                <p><strong>Valor:</strong> R$ ${parseFloat(c.valor).toFixed(2)}</p>
+                <p><strong>Prazo:</strong> ${c.prazo} dias</p>
+                <br>
+                <button class="btn btn-success" onclick="escolherCotacao('${req.id}', '${c.transportadora}', ${c.valor})">Escolher Esta Cotação</button>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function salvarCotacoes(reqId) {
+      const cotacoes = [
+        { reqId, transportadora: document.getElementById('transp1').value, valor: document.getElementById('valor1').value, prazo: document.getElementById('prazo1').value },
+        { reqId, transportadora: document.getElementById('transp2').value, valor: document.getElementById('valor2').value, prazo: document.getElementById('prazo2').value }
+      ].filter(c => c.transportadora !== '');
+
+      const allCot = getDB(DB_KEYS.COTACOES).filter(c => c.reqId !== reqId);
+      setDB(DB_KEYS.COTACOES, [...allCot, ...cotacoes]);
+
+      atualizarStatusReq(reqId, 'Aguardando Aprovação');
+      registrarHistorico(reqId, 'Cotações salvas', 'Opções de frete atualizadas pelo operador.');
+      alert('Cotações salvas!');
+      navigate('detalhe', reqId);
+    }
+
+    function escolherCotacao(reqId, transportadora, valor) {
+      document.getElementById('modalTitle').innerText = 'Confirmar Escolha de Cotação';
+      document.getElementById('modalBody').innerHTML = `Você está escolhendo a transportadora <strong>${transportadora}</strong> no valor de <strong>R$ ${valor.toFixed(2)}</strong>. Confirma?`;
+      
+      document.getElementById('modalConfirmBtn').onclick = () => {
+        const reqs = getDB(DB_KEYS.REQUISICOES);
+        const req = reqs.find(r => r.id === reqId);
+        if(req) {
+          req.transportadoraAprovada = transportadora;
+          req.valorFreteFinal = valor;
+          req.status = 'Cotação Aprovada';
+          setDB(DB_KEYS.REQUISICOES, reqs);
+          registrarHistorico(reqId, 'Cotação Aprovada', `Transportadora ${transportadora} escolhida por ${currentUser.nome}`);
+        }
+        closeModal();
+        navigate('detalhe', reqId);
+      };
+
+      document.getElementById('appModal').style.display = 'flex';
+    }
+
+    /* ================= OUTRAS ABAS (OPERAÇÃO, FINANCEIRO, ENTREGA, HISTÓRICO) ================= */
+    function renderOperacaoTab(req) {
+      return `
+        <div class="form-grid">
+          <div class="form-group"><label>Transportadora Aprovada</label><input type="text" value="${req.transportadoraAprovada || '-'}" readonly></div>
+          <div class="form-group"><label>NF de Transporte</label><input type="text" id="opNf"></div>
+          <div class="form-group"><label>Frete Negociado (R$)</label><input type="number" step="0.01" id="opValorNegociado" value="${req.valorFreteFinal || 0}"></div>
+        </div>
+        <br>
+        <button class="btn btn-primary" onclick="salvarOperacao('${req.id}')">Atualizar Operação</button>
+      `;
+    }
+
+    function salvarOperacao(reqId) {
+      atualizarStatusReq(reqId, 'Em Operação');
+      registrarHistorico(reqId, 'Operação atualizada', 'Dados de coleta e NF informados.');
+      alert('Dados operacionais atualizados!');
+      navigate('detalhe', reqId);
+    }
+
+    function renderFinanceiroTab(req) {
+      return `
+        <div class="form-grid">
+          <div class="form-group"><label>Status Financeiro</label>
+            <select id="finStatus">
+              <option>Não enviado</option><option>Enviado para Contabilidade</option><option>Aprovado</option><option>Pago</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Vencimento</label><input type="date" id="finVencimento"></div>
+        </div>
+        <br>
+        <button class="btn btn-primary" onclick="salvarFinanceiro('${req.id}')">Salvar Financeiro</button>
+      `;
+    }
+
+    function salvarFinanceiro(reqId) {
+      registrarHistorico(reqId, 'Financeiro Atualizado', 'Status de pagamento alterado.');
+      alert('Informações financeiras salvas!');
+      navigate('detalhe', reqId);
+    }
+
+    function renderEntregaTab(req) {
+      return `
+        <div class="form-grid">
+          <div class="form-group"><label>Status da Entrega</label>
+            <select id="entStatus"><option>Em Transporte</option><option>Entregue</option><option>Atrasado</option></select>
+          </div>
+          <div class="form-group"><label>Recebedor</label><input type="text" id="entRecebedor"></div>
+          <div class="form-group"><label>Data da Entrega Real</label><input type="date" id="entData"></div>
+        </div>
+        <br>
+        <button class="btn btn-success" onclick="salvarEntrega('${req.id}')">Registrar Entrega</button>
+      `;
+    }
+
+    function salvarEntrega(reqId) {
+      const st = document.getElementById('entStatus').value;
+      atualizarStatusReq(reqId, st);
+      registrarHistorico(reqId, 'Entrega Atualizada', `Status alterado para ${st}`);
+      alert('Entrega registrada!');
+      navigate('detalhe', reqId);
+    }
+
+    function renderHistoricoTab(req) {
+      const hist = getDB(DB_KEYS.HISTORICO).filter(h => h.reqId === req.id);
+      return `
+        <ul>
+          ${hist.map(h => `
+            <li style="margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
+              <small>${h.dataHora} - <strong>${h.usuario}</strong></small><br>
+              <strong>${h.acao}:</strong>${h.descricao}
+            </li>
+          `).join('')}
+        </ul>
+      `;
+    }
+
+    /* ================= GERADOR DE TEXTO DE COTAÇÃO ================= */
+    function gerarTextoCotacao(reqId) {
+      const req = getDB(DB_KEYS.REQUISICOES).find(r => r.id === reqId);
+      const texto = `Prezados,
+
+Solicito a cotação de frete e a previsão do prazo de entrega para a carga descrita abaixo:
+
+Dados de Faturamento e Referência:
+* Débito: ${req.empresaDebito}
+* CNPJ: ${req.cnpjDebito}
+* Número do PV / Motivo: ${req.pcPvMotivo}
+
+Origem (Coleta):
+* Razão Social: ${req.origem.razao}
+* Endereço: ${req.origem.endereco} - ${req.origem.cidade}/${req.origem.estado}
+
+Destino (Entrega):
+* Razão Social: ${req.destino.razao}
+* Endereço: ${req.destino.endereco} - ${req.destino.cidade}/${req.destino.estado}
+
+Especificações da Carga:
+* Valor NF: R$ ${req.valorTotal.toFixed(2)}
+* Peso Total: ${req.pesoTotal} KG
+* Volumes: ${req.totalVolumes}
+
+Atenciosamente,
+${currentUser.nome}`;
+
+      navigator.clipboard.writeText(texto);
+      alert('Texto de cotação gerado e copiado para a área de transferência!');
+    }
+
+    /* ================= UTILITÁRIOS E BACKUP ================= */
+    function registrarHistorico(reqId, acao, descricao) {
+      const hist = getDB(DB_KEYS.HISTORICO);
+      hist.push({
+        reqId,
+        dataHora: new Date().toLocaleString(),
+        usuario: currentUser ? currentUser.nome : 'Sistema',
+        acao,
+        descricao
+      });
+      setDB(DB_KEYS.HISTORICO, hist);
+    }
+
+    function atualizarStatusReq(reqId, status) {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      const req = reqs.find(r => r.id === reqId);
+      if(req) {
+        req.status = status;
+        setDB(DB_KEYS.REQUISICOES, reqs);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('appModal').style.display = 'none';
+    }
+
+    function renderConfiguracoes(container) {
+      container.innerHTML = `
+        <div class="form-section">
+          <div class="form-section-title">Configurações do Sistema e Backup</div>
+          <p>Exporte seus dados locais para segurança ou restaure dados previamente salvos.</p>
+          <br>
+          <button class="btn btn-primary" onclick="exportarBackupJSON()">Exportar Backup (JSON)</button>
+          <br><br>
+          ${currentUser.perfil === 'ADMINISTRADOR' ? `
+            <button class="btn btn-danger" onclick="limparDadosDemo()">Resetar Dados de Demonstração</button>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function exportarBackupJSON() {
+      const backup = {};
+      Object.values(DB_KEYS).forEach(k => backup[k] = getDB(k));
+      
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `backup_fretes_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    }
+
+    function limparDadosDemo() {
+      if(confirm('Atenção: Isso irá resetar os dados do sistema. Deseja continuar?')) {
+        localStorage.clear();
+        initDatabase();
+        alert('Dados resetados com sucesso.');
+        navigate('dashboard');
+      }
+    }
+
+    function exportarExcel() {
+      const reqs = getDB(DB_KEYS.REQUISICOES);
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(reqs.map(r => ({
+        Requisicao: r.numero,
+        Data: r.dataSolicitacao,
+        Solicitante: r.solicitante,
+        Debito: r.empresaDebito,
+        Origem: `${r.origem.cidade}/${r.origem.estado}`,
+        Destino: `${r.destino.cidade}/${r.destino.estado}`,
+        Status: r.status,
+        ValorFrete: r.valorFreteFinal
+      })));
+      
+      XLSX.utils.book_append_sheet(wb, ws, "Requisicoes");
+      XLSX.writeFile(wb, "Gestao_de_Fretes.xlsx");
+    }
+
+    function renderNotificacoes(container) {
+      container.innerHTML = `<div class="form-section"><div class="form-section-title">Notificações</div><p>Sem novas notificações pendentes.</p></div>`;
+    }
+
+    function renderUsuarios(container) {
+      const users = getDB(DB_KEYS.USUARIOS);
+      container.innerHTML = `
+        <div class="form-section">
+          <div class="form-section-title">Usuários Cadastrados</div>
+          <ul>${users.map(u => `<li>${u.nome} - <strong>${u.perfil}</strong> (${u.email})</li>`).join('')}</ul>
+        </div>
+      `;
+    }
+
+    /* INICIALIZAÇÃO */
+    window.onload = () => {
+      initDatabase();
+      checkAuth();
+    };
+  </script>
 </body>
 </html>
